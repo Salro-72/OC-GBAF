@@ -80,6 +80,14 @@ p
     }
 
   /* --------------------------------------- PAGE LOGIN */
+  
+  .title_box
+{
+  text-align: center;
+  color: black;
+  font-size: 0.7em;
+}
+
   .login_box
   {
     border: 3px solid #646464;
@@ -169,59 +177,102 @@ p.connexion
 
 .title
 {
+  text-align: center;
   color: white;
+  text-shadow: 2px 2px 5px black;
 }
 
 p.profil_connected
 {
   font-size: 0.9em;
   text-align: right;
+  color: white;
+}
+/*-------------------------------- */
+.sectionpresentations
+{
+  background-color: #c8c8c8;
+  background-size: cover;
+  padding: 20px;
 }
 
 .presentation_title_h1
 {
   font-size: 1.7em;
   text-align: center;
-  color: black;
+  color: white;
+  text-shadow: 2px 2px 5px black;
 }
 
-.sectionpresentations
+.presentation_text
 {
-  background-color: #c8c8c8;
-  width: auto;
-  left:0;
-  right:0;
+  font-size: 18px;
+  text-align: center;
+}
+
+.groupes_list
+{
+  text-align: left;
+  display: table; 
+  margin: 0 auto;
+}
+/*-------------------------------- */
+.sectionact_part
+{
+  background-color: #969696;
+  background-size: cover;
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
 .presentation_title_h2
 {
   font-size: 1.4em;
   text-align: center;
+  color: white;
+  text-shadow: 2px 2px 5px black;
 }
 
-.sectionact_part
+.container_lists
 {
-  background-color: #969696;
-  width: auto;
-  left:0;
-  right:0;
+ display: inline;
+ display: flex;
 }
+
+ul
+{
+  flex: 1;
+}
+/*-------------------------------- */
+.row
+{
+  display: inline;
+  display: flex;
+}
+
 .presentation_title_h3
 {
-  font-size: 1.2em;
-  text-align: center;
+  text-align: left;
+  color: white;
+  text-shadow: 2px 2px 5px black;
 }
 
-.sectionacteur_title
+.sneakpeak_text
 {
-  font-size: 1.7em;
-  text-align: center;
+ text-align: left;
+ font-size: 18px;
 }
 
-.presentation_text
+.logo_partenaire
 {
-  font-size: 16px;
-  text-align: center;
+  width: 90%;
+  box-shadow: 2px 2px 5px black;;
+}
+
+.read_more
+{
+  color: white;
+  text-shadow: 2px 2px 5px black;
 }
 /* --------------------------------------- PAGE ACTEURS commentaires, likes/dislikes */
 
