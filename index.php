@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 require 'configs/db.php';
 
@@ -26,7 +25,7 @@ require 'configs/db.php';
 
             <div class="option_box">
                 <div>
-                    <p>Connectez vous à votre espace</p>
+                    <p>Connectez vous à votre espace TEST</p>
                     <p><a href="login.php" class="connexion_button">Connexion</a></p><br>
 
                     <p>Première visite?</p>

@@ -182,6 +182,15 @@ p.connexion
   text-shadow: 2px 2px 5px black;
 }
 
+.profil_connected
+{
+  margin-left: auto;
+}
+
+.img_profile
+{
+ width: 5%;
+}
 p.profil_connected
 {
   font-size: 0.9em;
@@ -206,8 +215,11 @@ p.profil_connected
 
 .presentation_text
 {
+  text-align: justify;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
   font-size: 18px;
-  text-align: center;
 }
 
 .groupes_list
@@ -237,6 +249,9 @@ p.profil_connected
 {
  display: inline;
  display: flex;
+ margin-left: auto;
+ margin-right: auto;
+ width: 80%;
 }
 
 ul
@@ -275,38 +290,35 @@ ul
   text-shadow: 2px 2px 5px black;
 }
 /* --------------------------------------- PAGE ACTEURS commentaires, likes/dislikes */
-
-.column {
-  float: left;
-  width: 50%;
-  padding: 5px;
-}
-
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
 .logo_acteur
 {
-  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  padding-top: 10px;
 }
 
-.add_comment
+.presentation_act
 {
-  text-align: center;
+  text-align: justify;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  font-size: 16px;
 }
 
-.likes
+textarea
 {
-  text-align: right;
+  width: 400px;
+  height: 80px;
+  background-color: white;
+  resize: none;
+
 }
 
-.dislikes
-{
-  text-align: right;
-}
+/* --------------------------------------- PAGE MODIFIER LE PROFILE */
+
 
 /* --------------------------------------- PAGE LOGOUT */
 

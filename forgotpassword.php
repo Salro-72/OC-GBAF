@@ -1,11 +1,9 @@
 <?php
-
 session_start();
 require 'configs/db.php';
 
 // REDIRECTION: CONNECTÉ
-if (isset($_SESSION['lastname']) && isset($_SESSION['firstname']) && isset($_SESSION['id_user'])) {
-
+if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
     header('Location: /homepage.php');
     exit();
 }
@@ -20,7 +18,6 @@ if (isset($_SESSION['lastname']) && isset($_SESSION['firstname']) && isset($_SES
         <input type="password" id="mp" name="password" size="20">';
 
     $formType = $formDefault;
-
 
     /*-----------------------  Si l'utilisateur existe, Affiche la question et son formulaire */
 
