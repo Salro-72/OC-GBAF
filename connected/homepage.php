@@ -1,6 +1,10 @@
 <?php
 session_start();
 require '../configs/db.php';
+
+$firstname = isset($_POST['firstname']) ? $_POST['firstname'] : '';
+$lastname = isset($_POST['lastname']) ? $_POST['lastname'] : '';    
+
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +15,6 @@ require '../configs/db.php';
         <link rel="stylesheet" type="text/css" href="../style_GBAF.css"/>
         <title>Extranet GBAF</title>
     </head>
-
         <body>
             <header>
                 <?php include("../php/logo.php"); ?>
@@ -21,12 +24,12 @@ require '../configs/db.php';
                 </div>
                 <div class="profil_connected">
                     <img src="../GBAF_img/profile.png" alt="img_profile" class="img_profile"/>
-                    <p class="profil_connected"><?php echo $_SESSION['firstname'] . ' ' . $_SESSION['lastname']; ?></p>
+                    <?php include("../php/profile.php"); ?>
                     <!-- ajoute ici le nom d'utilisateur connecté -->
                 </div>
                 <div class="topnav">
                     <a class="active" href="homepage.php">Acceuil</a>
-                    <a href="modifyprofile.php">Modifier votre profile</a>
+                    <a href="modifyprofile_copy.php">TEST Modifier votre profile</a>
                     <a href="logout.php">Déconnexion</a>
                 </div>
 

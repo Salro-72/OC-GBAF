@@ -2,12 +2,76 @@
 session_start();
 require '../configs/db.php';
 
-date_default_timezone_set('Europe/Paris');
+$idActeur = isset($_POST['id_acteur']) ? $_POST['id_acteur'] : '';
+$idUser = isset($_POST['id_user']) ? $_POST['id_user'] : ''; {
 
-if($_POST['submit_commentaire']) {
-    if(isset($_POST['identifiant'], $_POST['commentaire'])
-    AND !empty($_POST['identifiant']) AND !empty($_POST['commentaire']));
+// B. Ajoute un nouveau commentaire unique
+// Cherche si l'utilisateur a déjà commenté
+$req_already_comment = $pdo->prepare('SELECT * FROM post WHERE id_user = ? AND id_acteur = ?');
+$req_already_comment->execute(array($_SESSION['id_user'], $idActeur));
+$userHasComment = $req_already_comment->fetch();
+$req_already_comment->closeCursor();
+
+// si il n'a pas déjà commenté
+if (!$userHasComment) {
+
+    $formComment = '';
+
+    if (isset($_POST['newCommentPosted']) and !empty($_POST['post'])) {
+
+        $req_insert_comment = $pdo->prepare('INSERT into post (id_user, id_acteur, date_add, post)
+                                VALUES (:id_user, :id_acteur, NOW(), :post)
+                                ');
+        $req_insert_comment->execute(array(
+            'id_user' => $_SESSION['id_user'],
+            'id_acteur' => $dataActeur['id_acteur'],
+            'post' => ($_POST['post'])
+        ));
+        $req_insert_comment->closeCursor();
+    }
 }
+}
+
+if ($userHasComment) {
+
+    $formComment = 'Vous avez déjà commenté';
+}
+
+// C. Compte le nombre de commentaire sur l'acteur
+$req_nbr_comments = $pdo->prepare('SELECT COUNT(*) as nbrComments FROM post WHERE id_acteur = ?');
+$req_nbr_comments->execute(array($idActeur));
+$commentsPosted = $req_nbr_comments->fetch();
+$nbrcommentsPosted = $commentsPosted['nbrComments'];
+$req_nbr_comments->closeCursor();
+
+// F. Fonction qui affiche tous les commentaires sur l'acteur
+function listCommentaires($pdo, $idActeur)
+{
+    $req_comment = $pdo->prepare('SELECT  p.post as comment, 
+                                    DATE_FORMAT(p.date_add, "%d/%m/%Y") as commentDate,
+                                    DATE_FORMAT(p.date_add, "%d/%m/%Y %T") as commentDateOrder, 
+                                    a.prenom as autorName
+                            FROM post p
+                            INNER JOIN account a
+                            ON p.id_user = a.id_user
+                            WHERE p.id_acteur = ?
+                            ORDER by commentDateOrder DESC');
+
+    $req_comment->bindValue(1, $idActeur, PDO::PARAM_INT);
+    $req_comment->execute();
+
+    while ($dataComment = $req_comment->fetch()) {
+
+        echo '<li>';
+        echo '<p>' . htmlspecialchars($dataComment['autorName'])  . '</p>';
+        echo '<p>' . $dataComment['commentDate']  . '</p>';
+        echo '<p>' . htmlspecialchars($dataComment['comment'])  . '</p>';
+        echo '</li>';
+    }
+
+    $req_comment->closeCursor();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -61,13 +125,49 @@ if($_POST['submit_commentaire']) {
             </section>
 <hr>          
 <!-- Section commentaire -->
-            
-<h2>Commentaires:<h2>
-    <form method="POST">
-        <textarea name="commentaire" placeholder="Votre commentaire"></textarea><br>
-        <input type="submit" value="Envoyer" name="submit_commentaire"></input>
-    </form>
+            <main>
 
+            <!-- Section commentaires -->
+            <section class="commentaires">
+                <div class="commentaires_dynamic">
+                    <!-- C. Nombre de commentaires -->
+                    <h4> 
+                        <?php echo $nbrcommentsPosted; ?> 
+                        commentaires 
+                    </h4>
 
+                    <!-- Ajouter un nouveau commentaire -->
+                    <div class="new_commentaire">
+                        <label class="open_popup" for="popup_button"> 
+                            Nouveau commentaire
+                        </label>
+                        <input type="checkbox" id="popup_button"/>
+                        <!-- B. fenêtre pop-up du formulaire -->
+                        <form 
+                            class="new_commentaire_formulaire"
+                            method="post"
+                            action="#"
+                        >
+                            <p>
+                                <label class="close_popup" for="popup_button"></label>
+                                <label for="post"> Ajoutez un nouveau commentaire sur Formation&co </label>
+                                <br>
+                                <textarea id="post" name="post"><?php echo $formComment; ?></textarea>
+                                <input type="submit" value="Envoyer" name="newCommentPosted" />
+                            </p>
+                        </form>
+                    </div>
+
+                <!-- F. Liste de tous les commentaires -->
+                <ul class="commentaires-list">
+                    <!--<li> -->
+                    <?php listCommentaires($pdo, $idActeur); ?>
+                </ul>
+            </section>
+
+            <aside class="retour-accueil">
+                <a href="homepage.php">retour à la page d'accueil</a>
+            </aside>
+    </main>
         </body>
 </html>
