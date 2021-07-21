@@ -1,7 +1,6 @@
 <?php
 session_start();
 require 'configs/db.php';
-
 ?>
 
 <!DOCTYPE html>

@@ -190,6 +190,7 @@ p.connexion
 .img_profile
 {
  width: 5%;
+ margin-right: auto;
 }
 p.profil_connected
 {
@@ -319,6 +320,27 @@ textarea
 
 /* --------------------------------------- PAGE MODIFIER LE PROFILE */
 
+.message_erreur
+{
+  font-size: 1.2em;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.edit_box
+{
+  border: 3px solid #646464;
+  border-radius: 8px;
+  width: 50%;
+  text-align:center;
+  font-size: 14px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 100px;
+  margin-top: 20px;
+  padding: 10px;
+  cursor: pointer;
+}
 
 /* --------------------------------------- PAGE LOGOUT */
 

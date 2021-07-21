@@ -9,7 +9,7 @@ if(isset($_POST['connexion'])){
     $passwordAttempt = !empty($_POST['password']) ? trim($_POST['password']) : null;
     
     //Retrieve the user account information for the given username.
-    $sql = "SELECT id, username, password FROM users WHERE username = :username";
+    $sql = "SELECT id_user, username, password FROM users WHERE username = :username";
     $stmt = $pdo->prepare($sql);
     
     //Bind value.
