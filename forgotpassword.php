@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'configs/db.php';
+include 'configs/account.php';
 
 // REDIRECTION: CONNECTÉ
 if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
@@ -14,7 +15,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
 
     $formQuestion = '<input type="textarea" id="reponse" name="reponse">';
 
-    $fomPasswordChange = '<label for="password">Nouveau mot de passe : </label>
+    $fomNewPassword = '<label for="password">Nouveau mot de passe : </label>
         <input type="password" id="mp" name="password" size="20">';
 
     $formType = $formDefault;
@@ -23,8 +24,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
 
     if (isset($_POST['username'])) {
 
-        // Cherche si l'utilisateur dans la BDD (voir account)
-        $dataAccount = searchUser($sql, $_POST['username']);
+        // Cherche si l'utilisateur dans la BDD (voir account.php)
+        $dataAccount = searchUser($pdo, $_POST['username']);
 
         if ($dataAccount) {
 
@@ -46,7 +47,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
     if (isset($_POST['reponse'])) {
 
         $formType = $formQuestion;
-        $dataAccount = searchUser($bdd, $_SESSION['username']);
+        $dataAccount = searchUser($pdo, $_SESSION['username']);
         $questionUser = $dataAccount['question'];
         $message = QUESTION;
         $isGoodAnswer = password_verify($_POST['reponse'], $dataAccount['reponse']);
@@ -57,12 +58,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
             unset($questionUser);
             // On affiche le formulaire de changement de mot de passe
             $formType = $fomPasswordChange;
-            $message = PASSWORD_CAN_CHANGE;
+            $message = CHANGE_PASSWORD;
         }
         if (!$isGoodAnswer) {
 
             $questionUser = $dataAccount['question'];
-            $message = ANSWER_WRONG;
+            $message = WRONG_ANSWER;
         }
     }
 
@@ -80,7 +81,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
             $passwordHashed = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
             // On remplace le mp dans la base de données
-            $req_update_password = $bdd->prepare('UPDATE account SET
+            $req_update_password = $pdo->prepare('UPDATE users SET
                                     password = :password
                                     WHERE username = :username');
             $req_update_password->execute(array(
@@ -91,7 +92,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
             $message = PASSWORD_UPDATE;
             $_SESSION['message'] = $message;
 
-            header('Location: /index.php');
+            header('Location: /homepage.php');
             exit();
         }
         if (!preg_match($mpValid, $_POST['password'])) {
@@ -99,10 +100,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
             $message = PASSWORD_INVALID;
         }
     }
-
-//  NON CONNECTÉ - page modifier son password
-if (!isset($_SESSION['nom']) && !isset($_SESSION['prenom']) && !isset($_SESSION['id_user']))
-
 ?>
 
 <!DOCTYPE html>
@@ -131,7 +128,7 @@ if (!isset($_SESSION['nom']) && !isset($_SESSION['prenom']) && !isset($_SESSION[
                                 echo $formType;
                         ?>
                         
-                        <input type="submit" name="dataSubmit" value="Envoyer"/>
+                        <input type="submit" name="suivant" value="Suivant"/>
                         </p>
                     </form>
                     <br>
