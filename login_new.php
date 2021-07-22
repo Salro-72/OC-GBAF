@@ -2,41 +2,48 @@
 session_start();
 require 'configs/db.php';
 
-if(isset($_POST['connexion'])){
+if(isset($_POST['login'])){
     
-
     $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
-    $passwordAttempt = !empty($_POST['password']) ? trim($_POST['password']) : null;
- 
-    $sql = "SELECT id, username, password FROM users WHERE username = :username";
+    $password = !empty($_POST['password']) ? trim($_POST['password']) : null;
+
+    $sql = "SELECT COUNT(username) AS num FROM users WHERE username = :username";
     $stmt = $pdo->prepare($sql);
-    
+    //Bind the provided username to our prepared statement.
     $stmt->bindValue(':username', $username);
-    
+    //Execute.
     $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //  Récupération de l'utilisateur et de son pass hashé
+    $req = $pdo->prepare('SELECT id_user, password FROM users WHERE username = :username');
+    $req->execute(array(
+        'username' => $username));
+    $resultat = $req->fetch();
     
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Comparaison du pass envoyé via le formulaire avec la base
+    $isPasswordCorrect = password_verify($_POST['password'], $resultat['password']);
     
-    if($user === false){
-        die('Incorrect username / password combination!');
-    } else{
-        $validPassword = password_verify($passwordAttempt, $user['password']);
-        
-        if($validPassword){
-            
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['logged_in'] = time();
-            
-            header('Location: homepage.php');
-            exit;
-            
-        } else{
-            die('Incorrect username / password combination!');
+    if (!$resultat)
+    {
+        echo 'Mauvais identifiant ou mot de passe !';
+    }
+        else
+        {
+            if ($isPasswordCorrect) {
+                $_SESSION['id_user'] = $resultat['id_user'];
+                $_SESSION['username'] = $username;
+                $_SESSION['firstname'] = $firstname;
+                $_SESSION['lastname'] = $lastname;
+                header('Location: connected/homepage.php');
+                exit;
+        }
+        else {
+            echo 'Mauvais identifiant ou mot de passe !';
         }
     }
-    
 }
- 
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -47,24 +54,22 @@ if(isset($_POST['connexion'])){
     </head>    
         <body>
             <header>
-                <?php include("php/logo.php"); ?>
+            <img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"/>
             </header>
         <body>
-        <div class="title">
-                <h1>Votre compte a bien été crée!</h1>
+        <h1 class="title_succes">Votre compte a bien été crée !</h1>
+            <div class="title_box">
+                <h1>Connectez-vous à votre espace membre:</h1>
             </div>
-                
-            <div class="title">
-                <h2>Connectez-vous à votre espace membre</h2>
-            </div> 
             <form action="login.php" method="post" class="option_box">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username"><br>
-                
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password"><br>
-                
-                <input type="submit" name="connexion" value="Connexion">
+
+                <label for="username">Identifiant</label>
+                <input type="text" id="username" name="username" required><br>
+            
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required><br>
+            
+                <input type="submit" name="login" value="Connexion">
             </form>
         </body>
     <?php include("php/footer.php"); ?>

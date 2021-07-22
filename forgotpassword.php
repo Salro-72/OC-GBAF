@@ -3,12 +3,6 @@ session_start();
 require 'configs/db.php';
 include 'configs/account.php';
 
-// REDIRECTION: CONNECTÉ
-if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
-    header('Location: /homepage.php');
-    exit();
-}
-
     // Les Formulaires 
     $formDefault = '<label for="username">Identifiant : </label>
         <input type="text" id="username" name="username" size="20">';
@@ -112,7 +106,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id_user'])) {
 
         <body>
             <header>
-                <?php include("php/logo.php"); ?>
+            <img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"/>
             </header>
 
             <div class="title">

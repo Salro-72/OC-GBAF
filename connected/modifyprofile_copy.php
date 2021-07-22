@@ -1,71 +1,62 @@
 <?php
 session_start();
 require '../configs/db.php';
-include '../configs/account.php';
+
+if (!$_SESSION['username'])  
+{  
+    header('location: ../login.php');  
+    exit;  
+}
 
 $_SESSION['username'] = isset($_POST['username']) ? $_POST['username'] : ""; 
 
-// Cherche L'utilisateur dans la bdd (voir account.php)
-$dataAccountOld = searchUser($pdo, $_SESSION['username']);
+if(isset($_POST['envoyer_update'])){
 
-// si on envoie le formulaire
-if (isset($_POST['envoyer'])) {
-    $dataAccount = searchUser($pdo, $_POST['username']);
-}
-// Si l'username n'existe pas
-if (!$dataAccount OR $dataAccountOld['username'] == $_POST['username']) {
-
-// Verification tous les champs ont été remplis
-if (!empty($_POST['firstname']) && !empty($_POST['lastname'])
-    && !empty($_POST['question']) && !empty($_POST['reponse'])
-    && !empty($_POST['password']) && !empty($_POST['username'])) {
-
-// et que le mot de passe est correct
-$isPasswordCorrect = password_verify($_POST['password'], $dataAccountOld['password']);
-
-if ($isPasswordCorrect) {
-    $reponseHashed = password_hash($_POST['reponse'], PASSWORD_DEFAULT);
-
-    // Change les infos de la bdd
-    $req_update_infos_user = $pdo->prepare('UPDATE account SET 
-                                            username = :username,
-                                            firstname = :firstname, 
-                                            lastname = :lastname,
-                                            question = :question,
-                                            reponse = :reponse
-                                            WHERE id_user = :id_user');
-    $req_update_infos_user->execute(array('username' => ($_POST['username']),
-                                            'firstname' => ($_POST['firstname']),
-                                            'lastname' => ($_POST['lastname']),
-                                            'question' => ($_POST['question']),
-                                            'reponse' => $reponseHashed,
-                                            'id_user' => $dataAccountOld['id_user']));
-
-    $usernameNew = $_POST['username'];
-    $req_update_infos_user->closeCursor();
-
-// Récupère les nouvelles valeurs de SESSION (fonction voir account)
-    $dataAccountNew = searchUser($pdo, $usernameNew);
-
-    $_SESSION['firstname'] = htmlspecialchars($dataAccountNew['firstname']);
-    $_SESSION['lastname'] = htmlspecialchars($dataAccountNew['lastname']);
-    $_SESSION['username'] = htmlspecialchars($dataAccountNew['username']);
-
-    $message = ACCOUNT_UPDATE;
-}
-    if (!$isPasswordCorrect) {
-        $message = PASSWORD_WRONG;
+    $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
+    $password = !empty($_POST['password']) ? trim($_POST['password']) : null;
+    $firstname = !empty($_POST['firstname']) ? trim($_POST['firstname']) : null;
+    $lastname = !empty($_POST['lastname']) ? trim($_POST['lastname']) : null;
+    $question = !empty($_POST['question']) ? trim($_POST['question']) : null;
+    $reponse = !empty($_POST['reponse']) ? trim($_POST['reponse']) : null;
+    
+    //Construct the SQL statement and prepare it.
+    $sql = "SELECT COUNT(username) AS num FROM users WHERE username = :username";
+    $stmt = $pdo->prepare($sql);
+    
+    //Bind the provided username to our prepared statement.
+    $stmt->bindValue(':username', $username);
+    
+    //Execute.
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if($row['num'] > 0){
+        die('Cet identifiant est déjà pris!');
     }
-} 
-    if (empty($_POST['firstname']) OR empty($_POST['lastname'])
-        OR empty($_POST['question']) OR empty($_POST['reponse'])
-        OR empty($_POST['password']) OR empty($_POST['username'])) {            
-            $message = EMPTY_FIELD;
+    
+    //Prepare our INSERT statement.
+    //Remember: We are inserting a new row into our users table.
+    $sql = "UPDATE INTO users (username, firstname, lastname, question, reponse)
+            VALUES (:username, :firstname, :lastname, :question, :reponse)";
+    $stmt = $pdo->prepare($sql);
+    
+    //Bind our variables.
+    $stmt->bindValue(':username', $username);
+    $stmt->bindValue(':firstname', $firstname);
+    $stmt->bindValue(':lastname', $lastname);
+    $stmt->bindValue(':question', $question);
+    $stmt->bindValue(':reponse', $passwordHash);
+
+    //Execute the statement and insert the new account.
+    $result = $stmt->execute();
+    
+    //If the signup process is successful.
+    if($result){
+        //What you do here is up to you!
+        header("location: profile_updated.php");
     }
+    
 }
-    if ($dataAccount AND $dataAccountOld['username'] != $_POST['username']) {
-            $message = USERNAME_EXIST;
-    }
 
     ?>
 
@@ -86,8 +77,7 @@ if ($isPasswordCorrect) {
                     <h1>Modifier votre profile:</h1>
                 </div>
                 <div class="profil_connected">
-                    <img src="../GBAF_img/profile.png" alt="img_profile" class="img_profile"/>
-                    <!-- ajoute ici le nom d'utilisateur connecté -->
+                    <?php include("../php/profile.php"); ?>
                 </div>
                 <div class="topnav">
                     <a href="homepage.php">Acceuil</a>
@@ -98,53 +88,34 @@ if ($isPasswordCorrect) {
             </header>
 
             <main>
-            <div class="message_erreur">
-                <!-- message erreur -->
-                <span>
-                    <?php echo $message; ?>
-                </span>
-                    <!-- Formulaire -->
-                    <form method="post" action="modifyprofile_copy.php" class="edit_box">
-                        <p>
-                            <label for="username">Identifiant : </label>
-                            <input type="text" id="username" name="username" size="20" 
-                            value="<?php defaultInputValue('username', $dataAccountOld['username']);?>" />
-                        <br>
-                        <br>
-                            <label for="firstname">Prénom : </label>
-                            <input type="text" id="firstname"name="firstname" size="30"
-                            value="<?php defaultInputValue('firstname', $dataAccountOld['firstname']);?>" />
-                        <br>
-                        <br>
-                            <label for="lastname">Nom : </label>
-                            <input type="text" id="lastname" name="lastname" size="30"
-                            value="<?php defaultInputValue('lastname', $dataAccountOld['lastname']);?>" />
-                        <br>
-                        <br>
-                            <label for="question">Votre question secrète : </label>
-                            <input type="text" id="question" name="question" size="40"
-                            value="<?php defaultInputValue('question', $dataAccountOld['question']);?>" />
-                        <br>
-                        <br>
-                            <label for="reponse">La réponse à votre question : </label>
-                            <input type="text" id="reponse" name="reponse" size="40"/>
-                        <br>
-                        <br>
-                            <label for="password">Entrez votre mot de passe: </label>
-                            <input type="password" id="password" name="password" size="20" />
-                        <br>
-                        <br>
-                            <input class="button-envoyer" type="submit" name="dataSubmit" value="Envoyer"
-                            onclick="unsetPreviousSession()" />
-                        <br>
-                        <br>
-                            <span>
-                                <em>*</em> Tous les champs doivent être remplis
-                            </span>
-                        </p>
-                    </form>
-            </div>
-            </main>
+            <div class="title_box">
+                <h2>Pour modifier votre profile,<br>veuillez remplir tous les sections demandés:</h2>
+            </div>   
+            
+            <form action="profile_updated.php" method="post" class="option_box">
+            
+                <label for="username">Votre nouvel identifiant</label>
+                <input type="text" id="username" name="username" required><br>
+                <br>
+                <label for="firstname">Votre nouvel prénom</label>
+                <input type="text" id="firstname" name="firstname" required><br>
+                <br>
+                <label for="lastname">Votre nouvel nom</label>
+                <input type="text" id="firtsname" name="lastname" required><br>
+                <br>
+                <label for="question">Votre nouvelle question sécrete</label>
+                <input type="text" id="question" name="question"required><br>
+                <br>
+                <label for="reponse">Votre nouvelle rèponse sécrete</label>
+                <input type="password" id="reponse" name="reponse" required><br>
+                <br>
+                <input type="submit" name="envoyer_update" value="Envoyer"></button>
+
+                <div class="new_password">
+                    <p><a href="forgotpassword.php">Pour changer votre mot de passe, cliquez ici</a></p>
+                </div> 
+                
+            </form>
 
         <?php include("../php/footer.php"); ?>
     </body>

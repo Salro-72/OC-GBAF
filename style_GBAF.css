@@ -26,6 +26,8 @@ header /* logon tausta */
       font-size: 14px;
       margin-left: auto;
       margin-right: auto;
+      margin-top: 20px;
+      margin-bottom: 50px;
       padding: 10px;
       cursor: pointer;
     }
@@ -182,19 +184,15 @@ p.connexion
   text-shadow: 2px 2px 5px black;
 }
 
-.profil_connected
-{
-  margin-left: auto;
-}
-
 .img_profile
 {
  width: 5%;
- margin-right: auto;
+ float: right;
+ margin-right: 10px;
 }
 p.profil_connected
 {
-  font-size: 0.9em;
+  font-size: 0.7em;
   text-align: right;
   color: white;
 }

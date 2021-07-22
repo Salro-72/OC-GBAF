@@ -1,3 +1,3 @@
 <footer>
-    <p class="copyright">© Copyright GBAF</p>
+    <p class="copyright">- Mentions legales - Contact -</p>
 </footer>

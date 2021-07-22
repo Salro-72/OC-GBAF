@@ -2,6 +2,14 @@
 session_start();
 require '../configs/db.php';
 
+if (!$_SESSION['username'])  
+{  
+    header('location: ../login.php');  
+    exit;  
+}
+
+date_default_timezone_set('Europe/Paris');
+
 $idActeur = isset($_POST['id_acteur']) ? $_POST['id_acteur'] : '';
 $idUser = isset($_POST['id_user']) ? $_POST['id_user'] : ''; {
 
@@ -85,15 +93,16 @@ function listCommentaires($pdo, $idActeur)
         <body>
             <header>
                 <?php include("../php/logo.php"); ?>
-                <p class="profil_connected"><?php echo $_GET['firstname'] . ' ' . $_GET['lastname']; ?> !</p>
-                <!-- ajoute ici le nom d'utilisateur connecté -->
+                <img src="../GBAF_img/profile.png" alt="img_profile" class="img_profile"/>
+                    <?php echo $_SESSION['username'] . ' ' . $_SESSION['lastname'];?>
+                    <!-- ajoute ici le nom d'utilisateur connecté -->
                 <div class="title">
                     <h1>Formation&co</h1> 
                 </div>
 
                 <div class="topnav">
                     <a href="../connected/homepage.php">Acceuil</a>
-                    <a href="../connected/modifyprofile.php">Modifier votre profile</a>
+                    <a href="../connected/modifyprofile_copy.php">Modifier votre profile</a>
                     <a href="../connected/logout.php">Déconnexion</a>
                 </div>
             </header>

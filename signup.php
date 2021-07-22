@@ -67,7 +67,7 @@ if(isset($_POST['envoyer'])){
     </head>    
         <body>
             <header>
-                <?php include("php/logo.php"); ?>
+            <img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"/>
             </header>
             
             <div class="title">

@@ -1,9 +1,13 @@
 <?php
 session_start();
 require '../configs/db.php';
+include '../configs/auth.php';
 
-$firstname = isset($_POST['firstname']) ? $_POST['firstname'] : '';
-$lastname = isset($_POST['lastname']) ? $_POST['lastname'] : '';    
+if (!$_SESSION['username'])  
+{  
+    header('location: ../login.php');  
+    exit;  
+}
 
 ?>
 
@@ -22,10 +26,8 @@ $lastname = isset($_POST['lastname']) ? $_POST['lastname'] : '';
                 <div class="title">
                     <h1>Bienvenue chez extranet GBAF</h1>
                 </div>
-                <div class="profil_connected">
-                    <img src="../GBAF_img/profile.png" alt="img_profile" class="img_profile"/>
+                <div>
                     <?php include("../php/profile.php"); ?>
-                    <!-- ajoute ici le nom d'utilisateur connecté -->
                 </div>
                 <div class="topnav">
                     <a class="active" href="homepage.php">Acceuil</a>
@@ -113,7 +115,7 @@ $lastname = isset($_POST['lastname']) ? $_POST['lastname'] : '';
                                 <h3 class="presentation_title_h3">DSA France</h3>
                                     <p class="sneakpeak_text">Dsa France accélère la croissance du territoire et s’engage avec les collectivités territoriales.
                                     Nous accompagnons les entreprises dans... </p>
-                                    <em><a href="../connected/dsafrance.php" class="read_more">Lire la suite</a></em>
+                                    <em><a href=" " class="read_more">Lire la suite</a></em>
                             </div> 
                         </div>
 <hr>
@@ -125,7 +127,7 @@ $lastname = isset($_POST['lastname']) ? $_POST['lastname'] : '';
                                 <h3 class="presentation_title_h3">CDE</h3>
                                     <p class="sneakpeak_text">La CDE (Chambre Des Entrepreneurs) accompagne les entreprises dans leurs démarches de formation. 
                                     Son président... </p>
-                                    <em><a href="../connected/cde.php" class="read_more">Lire la suite</a></em>
+                                    <em><a href=" " class="read_more">Lire la suite</a></em>
                             </div> 
                         </div>
                 </section>

@@ -44,7 +44,7 @@ define("EMPTY_FIELD",           "Veuillez remplir tous les champs");
 define("PASSWORD_WRONG",        "Ce n'est pas le bon mot de passe");
 define("PASSWORD_INVALID",      "Le mot de passe doit contenir au moins 4 caractères, dont une minuscule, une majuscule et un chiffre");
 define("ACCOUNT_UPDATE",        "Vos changements ont bien été pris en compte");
-define("QUESTION",              "répondez à votre question secrète : ");
+define("QUESTION",              "Répondez à votre question secrète : ");
 define("ANSWER_WRONG",          "Ce n'est pas la réponse attendue");
 define("PASSWORD_CAN_CHANGE",   "Vous pouvez changer votre mot de passe : ");
 define("PASSWORD_UPDATE",       "Votre mot de passe à bien été changé . <br> Vous pouvez vous connecter");

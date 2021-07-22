@@ -1,17 +1,5 @@
-<?php 
-require_once '../configs/db.php';
-
-
-
-$reponse = $pdo->query('SELECT firstname AND lastname FROM users');
-
-?>
-    <p>
-        <?php echo $donnees['firstname']; ?>
-        <?php echo $donnees['lastname']; ?>
+<img src="../GBAF_img/avatar.png" alt="img_profile" class="img_profile"/>
+    <p style="profil_connected">
+        <?php echo $_SESSION['username'] . ' ' . $_SESSION['lastname'];?>
     </p>
-<?php
-
-    $reponse->closeCursor(); // Termine le traitement de la requête
-
-?>
+<!-- le nom d'utilisateur connecté !!!!?? -->
