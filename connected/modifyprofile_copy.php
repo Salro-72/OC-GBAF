@@ -10,41 +10,34 @@ if (!$_SESSION['pseudo'])
 
 if(isset($_POST['envoyer_update'])){
     
-    $pseudo = $_POST['pseudo'];
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $question = $_POST['question'];
-    $reponse = $_POST['reponse'];
-
-    $passwordHash = password_hash($reponse, PASSWORD_BCRYPT, array("cost" => 12));
-
-    $sql = ('UPDATE users 
-            SET pseudo = :pseudo, 
-                firstname = :firstname, 
-                lastname = :lastname, 
-                question = :question, 
-                reponse = :reponse 
-                WHERE pseudo= :pseudo');
-    $stmt = $pdo->prepare($sql);
+$sql = "UPDATE users 
+        SET pseudo = :pseudo, 
+        firstname = :firstname, 
+        lastname = :lastname, 
+        question = :question, 
+        reponse = :reponse 
+        WHERE pseudo= :pseudo";
     
-    $stmt->bindParam(':pseudo', $pseudo);
-    $stmt->bindParam(':firstname', $firstname);
-    $stmt->bindParam(':lastname', $lastname);
-    $stmt->bindParam(':question', $question);
-    $stmt->bindParam(':reponse', $reponse);
-
-    $result = $stmt->execute();
+$stmt = $pdo->prepare($sql);
         
-        if (!$result)
+$stmt->bindParam(':pseudo', $_POST['pseudo'], PDO::PARAM_STR);
+$stmt->bindParam(':firstname', $_POST['firstname'], PDO::PARAM_STR);
+$stmt->bindParam(':lastname', $_POST['lastname'], PDO::PARAM_STR);
+$stmt->bindParam(':question', $_POST['question'], PDO::PARAM_STR);
+$stmt->bindParam(':reponse', $_POST['reponse'], PDO::PARAM_STR);
+
+$stmt->execute();
+            
+    if ($stmt)
+    {
+        header('Location: profile_updated.php?id='.$_SESSION['pseudo']);
+        exit;
+    }
+        else
         {
-            echo 'Erreur !';
+            echo "ERROR !";
         }
-            else
-            {
-                header('Location: profile_updated.php?id='.$_SESSION['id_user']);
-                exit;
-            }
-        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -96,7 +89,7 @@ if(isset($_POST['envoyer_update'])){
                 <label for="reponse">Votre nouvelle rèponse sécrete</label>
                 <input type="password" id="reponse" name="reponse" required><br>
                 <br>
-                <input type="submit" name="envoyer_update" value="Envoyer"></button>
+                <input type="submit" name="envoyer_update" value="Envoyer"></input>
 
                 <div class="new_password">
                     <p><a href="forgotpassword.php">Pour changer votre mot de passe, cliquez ici</a></p>
