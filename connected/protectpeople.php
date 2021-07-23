@@ -2,51 +2,46 @@
 session_start();
 require '../configs/db.php';
 
-date_default_timezone_set('Europe/Paris');
-
-// Insertion du message à l'aide d'une requête préparée
-$sql ="INSERT INTO minichat (pseudo, message) VALUES(?, ?)')";
-$stmt = $pdo->prepare($sql);
-
-// Redirection du visiteur vers la page du minichat
-header('Location: protectpeople.php');
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Mini-chat</title>
+        <title>Mon blog</title>
+	<link href="style.css" rel="stylesheet" /> 
     </head>
-    <style>
-    form
-    {
-        text-align:center;
-    }
-    </style>
+        
     <body>
+        <h1>Mon super blog !</h1>
+        <p>Derniers billets du blog :</p>
+ 
+<?php
+// On récupère les 5 derniers billets
+$req = $pdo->query('SELECT id, titre, contenu, DATE_FORMAT(date_creation, \'%d/%m/%Y à %Hh%imin%ss\') 
+AS date_creation_fr FROM billets ORDER BY date_creation DESC LIMIT 0, 5');
+
+while ($donnees = $req->fetch())
+{
+?>
+<div class="news">
+    <h3>
+        <?php echo htmlspecialchars($donnees['titre']); ?>
+        <em>le <?php echo $donnees['date_creation_fr']; ?></em>
+    </h3>
     
-    <form action="protectpeople_post.php" method="post">
-        <p>
-        <label for="pseudo">Pseudo</label> : <input type="text" name="pseudo" id="pseudo" /><br />
-        <label for="message">Message</label> :  <input type="text" name="message" id="message" /><br />
-
-        <input type="submit" value="Envoyer" />
-	</p>
-    </form>
-
-        <?php
-        // Récupération des 10 derniers messages
-        $reponse = $bdd->query('SELECT pseudo, message FROM minichat ORDER BY ID DESC LIMIT 0, 10');
-
-        // Affichage de chaque message (toutes les données sont protégées par htmlspecialchars)
-        while ($donnees = $reponse->fetch())
-        {
-            echo '<p><strong>' . htmlspecialchars($donnees['pseudo']) . '</strong> : ' . htmlspecialchars($donnees['message']) . '</p>';
-        }
-
-        $reponse->closeCursor();
-
-        ?>
-    </body>
+    <p>
+    <?php
+    // On affiche le contenu du billet
+    echo nl2br(htmlspecialchars($donnees['contenu']));
+    ?>
+    <br />
+    <em><a href="commentaires.php?billet=<?php echo $donnees['id']; ?>">Commentaires</a></em>
+    </p>
+</div>
+<?php
+} // Fin de la boucle des billets
+$req->closeCursor();
+?>
+</body>
 </html>
