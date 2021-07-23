@@ -2,63 +2,50 @@
 session_start();
 require '../configs/db.php';
 
-if (!$_SESSION['username'])  
+if (!$_SESSION['pseudo'])  
 {  
     header('location: ../login.php');  
     exit;  
 }
 
-$_SESSION['username'] = isset($_POST['username']) ? $_POST['username'] : ""; 
-
 if(isset($_POST['envoyer_update'])){
-
-    $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
-    $password = !empty($_POST['password']) ? trim($_POST['password']) : null;
-    $firstname = !empty($_POST['firstname']) ? trim($_POST['firstname']) : null;
-    $lastname = !empty($_POST['lastname']) ? trim($_POST['lastname']) : null;
-    $question = !empty($_POST['question']) ? trim($_POST['question']) : null;
-    $reponse = !empty($_POST['reponse']) ? trim($_POST['reponse']) : null;
     
-    //Construct the SQL statement and prepare it.
-    $sql = "SELECT COUNT(username) AS num FROM users WHERE username = :username";
+    $pseudo = $_POST['pseudo'];
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $question = $_POST['question'];
+    $reponse = $_POST['reponse'];
+
+    $passwordHash = password_hash($reponse, PASSWORD_BCRYPT, array("cost" => 12));
+
+    $sql = ('UPDATE users 
+            SET pseudo = :pseudo, 
+                firstname = :firstname, 
+                lastname = :lastname, 
+                question = :question, 
+                reponse = :reponse 
+                WHERE pseudo= :pseudo');
     $stmt = $pdo->prepare($sql);
     
-    //Bind the provided username to our prepared statement.
-    $stmt->bindValue(':username', $username);
-    
-    //Execute.
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if($row['num'] > 0){
-        die('Cet identifiant est déjà pris!');
-    }
-    
-    //Prepare our INSERT statement.
-    //Remember: We are inserting a new row into our users table.
-    $sql = "UPDATE INTO users (username, firstname, lastname, question, reponse)
-            VALUES (:username, :firstname, :lastname, :question, :reponse)";
-    $stmt = $pdo->prepare($sql);
-    
-    //Bind our variables.
-    $stmt->bindValue(':username', $username);
-    $stmt->bindValue(':firstname', $firstname);
-    $stmt->bindValue(':lastname', $lastname);
-    $stmt->bindValue(':question', $question);
-    $stmt->bindValue(':reponse', $passwordHash);
+    $stmt->bindParam(':pseudo', $pseudo);
+    $stmt->bindParam(':firstname', $firstname);
+    $stmt->bindParam(':lastname', $lastname);
+    $stmt->bindParam(':question', $question);
+    $stmt->bindParam(':reponse', $reponse);
 
-    //Execute the statement and insert the new account.
     $result = $stmt->execute();
-    
-    //If the signup process is successful.
-    if($result){
-        //What you do here is up to you!
-        header("location: profile_updated.php");
-    }
-    
-}
-
-    ?>
+        
+        if (!$result)
+        {
+            echo 'Erreur !';
+        }
+            else
+            {
+                header('Location: profile_updated.php?id='.$_SESSION['id_user']);
+                exit;
+            }
+        }
+?>
 
 <!DOCTYPE html>
 <html>
@@ -92,10 +79,10 @@ if(isset($_POST['envoyer_update'])){
                 <h2>Pour modifier votre profile,<br>veuillez remplir tous les sections demandés:</h2>
             </div>   
             
-            <form action="profile_updated.php" method="post" class="option_box">
+            <form action="" method="post" class="option_box">
             
-                <label for="username">Votre nouvel identifiant</label>
-                <input type="text" id="username" name="username" required><br>
+                <label for="pseudo">Votre nouvel identifiant</label>
+                <input type="text" id="pseudo" name="pseudo" required><br>
                 <br>
                 <label for="firstname">Votre nouvel prénom</label>
                 <input type="text" id="firstname" name="firstname" required><br>

@@ -82,22 +82,22 @@ if(isset($_POST['envoyer'])){
             
                 <label for="username">Identifiant</label>
                 <input type="text" id="username" name="username" required><br>
-
+                <br>
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required><br>
-
+                <br>
                 <label for="firstname">Prénom</label>
                 <input type="text" id="firstname" name="firstname" required><br>
-
+                <br>
                 <label for="lastname">Nom</label>
                 <input type="text" id="firtsname" name="lastname" required><br>
-
+                <br>
                 <label for="question">Votre question sécrete</label>
                 <input type="text" id="question" name="question"required><br>
-
+                <br>
                 <label for="reponse">Votre rèponse sécrete</label>
                 <input type="password" id="reponse" name="reponse" required><br>
-
+                <br>
                 <input type="submit" name="envoyer" value="Envoyer"></button>
                 
                 <form action="signup.php" method="post">

@@ -4,22 +4,22 @@ require 'configs/db.php';
 
 if(isset($_POST['login'])){
     
-    $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
+    $pseudo = !empty($_POST['pseudo']) ? trim($_POST['pseudo']) : null;
     $password = !empty($_POST['password']) ? trim($_POST['password']) : null;
     $firstname = !empty($_POST['firstname']) ? trim($_POST['firstname']) : null;
     $lastname = !empty($_POST['lastname']) ? trim($_POST['lastname']) : null;
 
-    $sql = "SELECT COUNT(username) AS num FROM users WHERE username = :username";
+    $sql = "SELECT COUNT(pseudo) AS num FROM users WHERE pseudo = :pseudo";
     $stmt = $pdo->prepare($sql);
 
-    $stmt->bindValue(':username', $username);
+    $stmt->bindValue(':pseudo', $pseudo);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     //  Récupération de l'utilisateur et de son mot de passe hashé
-    $req = $pdo->prepare('SELECT id_user, password FROM users WHERE username = :username');
+    $req = $pdo->prepare('SELECT id_user, password FROM users WHERE pseudo = :pseudo');
     $req->execute(array(
-        'username' => $username));
+        'pseudo' => $pseudo));
     $resultat = $req->fetch();
     
     // Comparaison du pass envoyé via le formulaire avec la base
@@ -33,7 +33,7 @@ if(isset($_POST['login'])){
         {
             if ($isPasswordCorrect) {
                 $_SESSION['id_user'] = $resultat['id_user'];
-                $_SESSION['username'] = $username;
+                $_SESSION['pseudo'] = $pseudo;
                 $_SESSION['firstname'] = $firstname;
                 $_SESSION['lastname'] = $lastname;
                 header('Location: connected/homepage.php');
@@ -63,8 +63,8 @@ if(isset($_POST['login'])){
             </div>
             <form action="login.php" method="post" class="option_box">
 
-                <label for="username">Identifiant</label>
-                <input type="text" id="username" name="username" required><br>
+                <label for="pseudo">Identifiant</label>
+                <input type="text" id="pseudo" name="pseudo" required><br>
                 <br>
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required><br>

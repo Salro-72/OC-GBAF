@@ -93,15 +93,18 @@ function listCommentaires($pdo, $idActeur)
         <body>
             <header>
                 <?php include("../php/logo.php"); ?>
-                <img src="../GBAF_img/profile.png" alt="img_profile" class="img_profile"/>
-                    <?php echo $_SESSION['username'] . ' ' . $_SESSION['lastname'];?>
-                    <!-- ajoute ici le nom d'utilisateur connecté -->
-                <div class="title">
+                
+                <div>
+                    <?php include("../php/profile.php"); ?>
+                </div>
+                
+                    <div class="title">
                     <h1>Formation&co</h1> 
                 </div>
 
                 <div class="topnav">
                     <a href="../connected/homepage.php">Acceuil</a>
+                    <a class="active" href="../connected/formationco.php">Formation&co</a>
                     <a href="../connected/modifyprofile_copy.php">Modifier votre profile</a>
                     <a href="../connected/logout.php">Déconnexion</a>
                 </div>

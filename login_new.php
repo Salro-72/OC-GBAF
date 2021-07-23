@@ -65,10 +65,10 @@ if(isset($_POST['login'])){
 
                 <label for="username">Identifiant</label>
                 <input type="text" id="username" name="username" required><br>
-            
+                <br>
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required><br>
-            
+                <br>
                 <input type="submit" name="login" value="Connexion">
             </form>
         </body>

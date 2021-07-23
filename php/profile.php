@@ -1,5 +1,6 @@
 <img src="../GBAF_img/avatar.png" alt="img_profile" class="img_profile"/>
     <p style="profil_connected">
-        <?php echo $_SESSION['username'] . ' ' . $_SESSION['lastname'];?>
-    </p>
+         </p>
+<?php echo $_SESSION['pseudo'];?>
+
 <!-- le nom d'utilisateur connecté !!!!?? -->

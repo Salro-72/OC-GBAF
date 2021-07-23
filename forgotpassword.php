@@ -3,97 +3,6 @@ session_start();
 require 'configs/db.php';
 include 'configs/account.php';
 
-    // Les Formulaires 
-    $formDefault = '<label for="username">Identifiant : </label>
-        <input type="text" id="username" name="username" size="20">';
-
-    $formQuestion = '<input type="textarea" id="reponse" name="reponse">';
-
-    $fomNewPassword = '<label for="password">Nouveau mot de passe : </label>
-        <input type="password" id="mp" name="password" size="20">';
-
-    $formType = $formDefault;
-
-    /*-----------------------  Si l'utilisateur existe, Affiche la question et son formulaire */
-
-    if (isset($_POST['username'])) {
-
-        // Cherche si l'utilisateur dans la BDD (voir account.php)
-        $dataAccount = searchUser($pdo, $_POST['username']);
-
-        if ($dataAccount) {
-
-            // récupère son username pour les autres formulaires
-            $_SESSION['username'] = $dataAccount['username'];
-            // On donne la question
-            $formType = $formQuestion;
-            $question = '<label for="reponse">' . $dataAccount['question'] . ' </label>';
-            $message = QUESTION;
-        }
-        if (!$dataAccount) {
-
-            $message = USERNAME_UNKNOWN;
-        }
-    }
-
-    /*----------------------- Si on répond à la question secrète */
-
-    if (isset($_POST['reponse'])) {
-
-        $formType = $formQuestion;
-        $dataAccount = searchUser($pdo, $_SESSION['username']);
-        $questionUser = $dataAccount['question'];
-        $message = QUESTION;
-        $isGoodAnswer = password_verify($_POST['reponse'], $dataAccount['reponse']);
-
-        // Si la réponse correspond
-        if ($isGoodAnswer){
-
-            unset($questionUser);
-            // On affiche le formulaire de changement de mot de passe
-            $formType = $fomPasswordChange;
-            $message = CHANGE_PASSWORD;
-        }
-        if (!$isGoodAnswer) {
-
-            $questionUser = $dataAccount['question'];
-            $message = WRONG_ANSWER;
-        }
-    }
-
-    /*----------------------- Si on modifie son mot de passe */
-
-    if (isset($_POST['password'])) {
-
-        unset($questionUser);
-        $formType = $fomPasswordChange;
-
-        // Si le nouveau mot de passe est conforme
-        if (preg_match($mpValid, $_POST['password'])) {
-
-            // On Hash le mot de passe
-            $passwordHashed = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-            // On remplace le mp dans la base de données
-            $req_update_password = $pdo->prepare('UPDATE users SET
-                                    password = :password
-                                    WHERE username = :username');
-            $req_update_password->execute(array(
-                'password' => $passwordHashed,
-                'username' => $_SESSION['username']));
-            $req_update_password->closeCursor();
-
-            $message = PASSWORD_UPDATE;
-            $_SESSION['message'] = $message;
-
-            header('Location: /homepage.php');
-            exit();
-        }
-        if (!preg_match($mpValid, $_POST['password'])) {
-
-            $message = PASSWORD_INVALID;
-        }
-    }
 ?>
 
 <!DOCTYPE html>
@@ -113,15 +22,11 @@ include 'configs/account.php';
             <h2>Veuillez changer votre mot de passe</h2>
             </div>
                 <div class="inscription_box">
-                    <form method="POST" action="forgotpassword.php">
-                        <p>
-                        <?php   // affiche la question secrète
-                            if (isset($questionUser)) {
-                                echo $questionUser;
-                            }
-                                echo $formType;
-                        ?>
-                        
+                    <form method="POST" action="">
+                 
+
+
+
                         <input type="submit" name="suivant" value="Suivant"/>
                         </p>
                     </form>

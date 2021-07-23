@@ -2,7 +2,7 @@
 session_start();
 require '../configs/db.php';
 
-if (!isset($_SESSION['username']))  
+if (!$_SESSION['username'])  
 {  
     header('location: ../login.php');  
     exit;  

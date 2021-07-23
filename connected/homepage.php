@@ -1,13 +1,14 @@
 <?php
 session_start();
 require '../configs/db.php';
-include '../configs/auth.php';
 
-if (!$_SESSION['username'])  
+
+if (!$_SESSION['pseudo'])  
 {  
     header('location: ../login.php');  
     exit;  
 }
+
 
 ?>
 
