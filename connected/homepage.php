@@ -2,19 +2,15 @@
 session_start();
 require '../configs/db.php';
 
-
 if (!$_SESSION['pseudo'])  
 {  
     header('location: ../login.php');  
     exit;  
 }
-
-
 ?>
 
 <!DOCTYPE html>
 <html>
-
     <head>
         <meta charset="UTF-8" />
         <link rel="stylesheet" type="text/css" href="../style_GBAF.css"/>
@@ -23,7 +19,6 @@ if (!$_SESSION['pseudo'])
         <body>
             <header>
                 <?php include("../php/logo.php"); ?>
-                
                 <div class="title">
                     <h1>Bienvenue chez extranet GBAF</h1>
                 </div>
@@ -35,7 +30,6 @@ if (!$_SESSION['pseudo'])
                     <a href="modifyprofile_copy.php">TEST Modifier votre profile</a>
                     <a href="logout.php">Déconnexion</a>
                 </div>
-
             </header>
  <!-- section présentation: -->
                 <div class="sectionpresentations">
@@ -84,54 +78,32 @@ if (!$_SESSION['pseudo'])
                     </div>
                     <hr>
 <!-- section acteurs et partenaires textes: -->
-                        <div class="row">
-                            <div class="column">
-                                <img src="../GBAF_img/formation_co.png" class="logo_partenaire" alt="logo-partenaire"/>
-                            </div>
-                            <div class="column">
-                                <h3 class="presentation_title_h3">Formation&co</h3>
-                                    <p class="sneakpeak_text">Formation&amp;co est une association française présente sur tout le territoire.
-                                    Nous proposons... </p>
-                                    <em><a href="../connected/formationco.php" class="read_more">Lire la suite</a></em>
-                            </div> 
-                        </div>
-<hr>
-                        <div class="row">
-                            <div class="column">
-                                <img src="../GBAF_img/protectpeople.png" class="logo_partenaire" alt="logo-partenaire"/>
-                            </div>
-                            <div class="column">
-                                <h3 class="presentation_title_h3">Protectpeople</h3>
-                                    <p class="sneakpeak_text">Protectpeople finance la solidarité nationale.
-                                    Nous appliquons le principe édifié par la...</p>
-                                    <em><a href="../connected/protectpeople.php" class="read_more">Lire la suite</a></em>
-                            </div> 
-                        </div>
-<hr>
-                        <div class="row">
-                            <div class="column">
-                                <img src="../GBAF_img/Dsa_france.png" class="logo_partenaire" alt="logo-partenaire"/>
-                            </div>
-                            <div class="column">
-                                <h3 class="presentation_title_h3">DSA France</h3>
-                                    <p class="sneakpeak_text">Dsa France accélère la croissance du territoire et s’engage avec les collectivités territoriales.
-                                    Nous accompagnons les entreprises dans... </p>
-                                    <em><a href=" " class="read_more">Lire la suite</a></em>
-                            </div> 
-                        </div>
-<hr>
-                        <div class="row">
-                            <div class="column">
-                                <img src="../GBAF_img/CDE.png" class="logo_partenaire" alt="logo-partenaire"/>
-                            </div>
-                            <div class="column">
-                                <h3 class="presentation_title_h3">CDE</h3>
-                                    <p class="sneakpeak_text">La CDE (Chambre Des Entrepreneurs) accompagne les entreprises dans leurs démarches de formation. 
-                                    Son président... </p>
-                                    <em><a href=" " class="read_more">Lire la suite</a></em>
-                            </div> 
-                        </div>
-                </section>
+        <?php
+            // On récupère les 5 derniers billets
+            $req = $pdo->query('SELECT id, titre, contenu
+            FROM billets');
+
+            while ($donnees = $req->fetch())
+            {
+            ?>
+        <div class="news">
+            <h3>
+                <?php echo htmlspecialchars($donnees['titre']); ?>
+            </h3>
+
+        <p>
+            <?php
+            // On affiche le contenu du billet
+            echo nl2br(htmlspecialchars($donnees['contenu']));
+            ?>
+            <br />
+                <em><a href="acteurs.php?billet=<?php echo $donnees['id']; ?>">Lisez la suite...</a></em>
+        </p>
+        </div>
+            <?php
+            } // Fin de la boucle des billets
+            $req->closeCursor();
+            ?>
         <?php include("../php/footer.php"); ?>
     </body>
 </html>
