@@ -69,7 +69,7 @@ if(isset($_POST['login'])){
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required><br>
                 <br>
-                <input type="submit" name="login" value="Connexion">
+                <input type="submit" name="login" value="Connexion" class="connexion_button">
             </form>
         </body>
     <?php include("php/footer.php"); ?>

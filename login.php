@@ -39,9 +39,6 @@ if(isset($_POST['login'])){
                 header('Location: connected/homepage.php');
                 exit;
         }
-        else {
-            echo 'Mauvais identifiant ou mot de passe !';
-        }
     }
 }
 
@@ -56,20 +53,19 @@ if(isset($_POST['login'])){
         <body>
             <header>
             <img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"/>
-            </header>
-        <body>
-            <div class="title_box">
+            <div class="title">
                 <h1>Connectez-vous à votre espace membre:</h1>
-            </div>
+            </div>    
+            </header>
             <form action="login.php" method="post" class="option_box">
 
-                <label for="pseudo">Identifiant</label>
+                <label for="pseudo" class="names">Identifiant</label>
                 <input type="text" id="pseudo" name="pseudo" required><br>
                 <br>
-                <label for="password">Mot de passe</label>
+                <label for="password" class="names">Mot de passe</label>
                 <input type="password" id="password" name="password" required><br>
                 <br>
-                <input type="submit" name="login" value="Connexion">
+                <input type="submit" name="login" value="Connexion" class="connexion_button">
 
                 <div class="new_password">
                     <p><a href="forgotpassword.php">Mot de passe oublié?</a></p>

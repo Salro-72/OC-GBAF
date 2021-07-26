@@ -15,20 +15,18 @@ require 'configs/db.php';
         <body>
             <header>
             <img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"/>
-            </header>
-
             <div class="title">
                 <h1>Bienvenue chez <em>Extranet</em>
                 <br>de GBAF</h1>
             </div>
+            </header>
 
             <div class="option_box">
                 <div>
                     <p>Connectez vous à votre espace</p>
-                    <p><a href="login.php" class="connexion_button">Connexion</a></p><br>
-
+                    <p><a href="login.php" class="connexion_button">Connexion</a></p>
                     <p>Première visite?</p>
-                    <p><a href="signup.php" class="inscritpion_button">Inscription</a></p>
+                    <p><a href="signup.php" class="connexion_button">Inscription</a></p>
                 </div>
             </div>
 
