@@ -36,7 +36,7 @@ p {
   font-size: 1.2em;
 }
 
-.connexion_button {
+.submit_button {
   background-color: #c8c8c8;
   border-radius: 8px; 
   color: white;
@@ -49,7 +49,7 @@ p {
   cursor: pointer;
 }
 
-.connexion_button:hover {
+.submit_button:hover {
   background-color: #646464;
   color: white;
   transition-duration: 0.4s;
@@ -77,13 +77,7 @@ p {
   font-size: 1.2em;
 }
 
-.new_inscription {
-  text-align: center;
-  display: block;
-  margin-right: 4px;
-}
-
-.new_password {
+.box_link {
   text-align: center;
   display: block;
   margin-right: 4px;
@@ -148,7 +142,7 @@ p.connexion {
  margin-right: 10px;
 }
 
-p.profil_connected {
+.profil_connected {
   font-size: 0.7em;
   text-align: right;
   color: white;
@@ -270,16 +264,10 @@ float: right;
   color:red;
 }
 /* --------------------------------------- PAGE MODIFIER LE PROFILE */
-.message_erreur {
-  font-size: 1.2em;
-  text-align: center;
-  margin-top: 10px;
-}
-
 .edit_box {
   border: 3px solid #646464;
   border-radius: 8px;
-  width: 50%;
+  width: 80%;
   text-align:center;
   font-size: 14px;
   margin-left: auto;
@@ -312,4 +300,234 @@ p.copyright {
   font-size: 0.7em;
   text-align: center;
   bottom:0;
+}
+
+/* --------------------------------------- REGLEMENTS POUR SMARPHONE */
+@media screen and (max-width: 1024px)
+{
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+  }
+  
+  header {
+    background-color: #646464;
+    width: 100%;
+    left:0;
+    right:0;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 2em;
+    color: white;
+    text-shadow: 2px 2px 5px black;
+  }
+  
+  .option_box {
+    border: 10px solid #646464;
+    width: 90%;
+    text-align: center;
+    font-size: 4em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding: 10px;
+  }
+
+  .names {
+    color: black;
+    font-size: 1.2em;
+  }
+  
+  .submit_button {
+    background-color: #c8c8c8;
+    border-radius: 8px; 
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  .insert_box {
+    width: 90%;
+    font-size: 1em;
+  }
+
+  .box_link {
+    text-align: center;
+    display: block;
+    margin-right: 4px;
+    font-size: 0.8em;
+  }
+
+  .title_box {
+    text-align: center;
+    color: black;
+    font-size: 1em;
+  }
+
+  .back_link {
+    font-size: 3em;
+    margin-left: 10px;
+  }
+
+  .topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 2em;
+  }
+
+  .profil_connected {
+    font-size: 1em;
+    text-align: right;
+    color: white;
+  }
+
+  .img_profile {
+    width: 10%;
+    float: right;
+    margin-right: 10px;
+   }
+
+   .sectionpresentations {
+    background-color: #c8c8c8;
+    background-size: cover;
+    padding: 20px;
+    font-size: 5em;
+  }
+
+  .presentation_text {
+    text-align: justify;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    font-size: 0.7em;
+  }
+
+  .groupes_list {
+    text-align: left;
+    display: table; 
+    margin: 0 auto;
+    font-size: 0.7em;
+  }
+
+  .container_lists {
+    display: table; 
+    margin-right: 30px;
+    width: 80%;
+    font-size: 3em;
+   }
+
+  .logo_partenaire {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    }
+
+  .presentation_title_h3 {
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 5px black;
+    font-size: 5em;
+    }
+
+  .row {
+    display: inline;
+  }
+
+  .sneakpeak_text {
+   text-align: center;
+   font-size: 4em;
+  }
+
+  .logo_acteur_comment {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding-top: 50px;
+  }
+  
+  .presentation_act {
+    text-align: justify;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    font-size: 2em;
+  }
+  
+  .comment_box {
+    margin-left: 100px;
+    width: 90%;
+  }
+
+  .name_mobile {
+    font-size: 3em;
+  }
+  
+  .insert_box_mobile {
+    width: 90%;
+    font-size: 3em;
+  }
+
+  .submit_button_mobile {
+    background-color: #c8c8c8;
+    border-radius: 8px; 
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 4em;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  .comment_everyone {
+    text-align: right;
+  }
+
+  .vote_like {
+    width: 70%;
+    font-size: 2em;
+  }
+  .vote_dislike {
+    width: 70%;
+    font-size: 2em;
+  }
+
+  p.title_logout {
+    text-align: center;
+    font-size: 5em;
+  }
+
+  footer {
+    position: fixed;
+    background-color: #646464;
+    width: 100%;
+    height: 5em;
+    bottom: 0;
+    left:0;
+    right:0;
+  }
+  
+  p.copyright {
+    position: absolute;
+    width: 100%;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+    bottom:0;
+  }
 }
