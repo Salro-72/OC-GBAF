@@ -80,26 +80,29 @@ if (!$_SESSION['pseudo'])
 <!-- section acteurs et partenaires textes: -->
         <?php
             // On récupère les 5 derniers billets
-            $req = $pdo->query('SELECT id, titre, contenu
+            $req = $pdo->query('SELECT id, titre, firstline, logo_acteur
             FROM billets');
 
             while ($donnees = $req->fetch())
             {
             ?>
-        <div class="news">
-            <h3>
+
+        <div class="row">
+        <img class="logo_partenaire">
+                <?php echo '<img src="data:image/jpeg;base64,'.base64_encode( $donnees['logo_acteur'] ).'"/>'?>
+            </img> 
+           <br>
+            <h3 class="presentation_title_h3">
                 <?php echo htmlspecialchars($donnees['titre']); ?>
             </h3>
-
-        <p>
-            <?php
-            // On affiche le contenu du billet
-            echo nl2br(htmlspecialchars($donnees['contenu']));
-            ?>
-            <br />
-                <em><a href="acteurs.php?billet=<?php echo $donnees['id']; ?>">Lisez la suite...</a></em>
-        </p>
+            <br>
+            <p class="sneakpeak_text"><?php echo nl2br(htmlspecialchars($donnees['firstline']));?>
+                <br />
+                <em><a href="acteurs.php?billet=<?php echo $donnees['id']; ?>" class="read_more">Lisez la suite...</a></em>
+            </p>
+            <br>
         </div>
+        <hr>
             <?php
             } // Fin de la boucle des billets
             $req->closeCursor();
