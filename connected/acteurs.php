@@ -6,19 +6,7 @@ if (!$_SESSION['id_user'])
 {  
     header('location: ../login.php');  
     exit;  
-}
-
-// (B) DUMMY POSTS  ID BDDstä
-$posts = [
-    "1" => "Donnez votre avis :"
-  ];
-  $pid = [];
-  foreach ($posts as $id=>$txt) { $pid[] = $id; }
-  
-  // cherce votes
-  require "votes.php";
-  $react = $REACT->get($pid);
-  $ureact = $REACT->getUser($pid, $_SESSION['id_user']);
+}  
   
 ?>
 
@@ -72,34 +60,44 @@ $posts = [
     <script src="votes.js"></script>
   </head>
   <body>
-    <div id="demo"><?php
-        foreach ($posts as $id=>$txt) { 
-        $likes = isset($react[$id][1]) ? $react[$id][1] : 0 ;
-        $dislikes = isset($react[$id][0]) ? $react[$id][0] : 0 ;
-        $reuser = isset($ureact[$id]) ? $ureact[$id] : "" ; ?>
-        
-        <div class="prow" data-react="<?=$reuser?>" id="prow<?=$id?>">
-            <div class="ptxt"><?=$txt?></div>
-                <div class="plike" onclick="react(<?=$id?>, 1)">
+  <?php
+  
+  $req = $pdo->prepare('SELECT vote FROM votes WHERE id_acteur = ? AND id_user = ?');
+  $req->execute(array($_GET['billet'], $_POST['id_user']));
+  $number = $req->rowCount();
+
+  $fecth = $req->fetch();
+
+  if ($number) {
+      $like = $fetch['vote'];
+     
+      if ($like) {
+          
+      }
+  }
+  ?>
+    <div id="demo">
+        <div class="prow" data-react="<?=$reuser?>" id="prow<?=$_GET['billet']?>">
+            <div class="ptxt">Donnez votre avis:</div>
+                <div class="plike" onclick="react(<?=$_GET['billet']?>, 1)">
                 <i class="fa fa-thumbs-up"></i>
                 <span class="countlike"><?=$likes?></span>
                 </div>
         
-                <div class="pdislike" onclick="react(<?=$id?>, 0)">
+                <div class="pdislike" onclick="react(<?=$_GET['billet']?>, 0)">
                 <i class="fa fa-thumbs-down"></i>
                 <span class="countdislike"><?=$dislikes?></span>
                 </div>
         </div>
-        <?php } ?>
     </div>
 <!-- section ecrire commentaire -->    
         <form method="POST" action="commentaires_post.php?billet=<?php echo $_GET['billet'];?>" class="comment_box">
             <p>
                 <label for="id_user" class="name_mobile">Veuillez verifier votre identifiant:</label><br>
-                <input type="text" name="id_user" id="id_user" placeholder="<?php echo $_SESSION['pseudo'];?>" class="insert_box_mobile" required/>
+                <input type="text" name="id_user" id="id_user" value="<?php echo $_SESSION['pseudo'];?>" class="insert_box_mobile" required/>
                 <br>
                 <label for="commentaire"></label><br />
-                <textarea name="commentaire" id="commentaire" cols="50" rows="5" placeholder="Votre commentaire" class="insert_box_mobile" required></textarea><br />
+                <textarea name="comment" id="comment" cols="50" rows="5" placeholder="Votre commentaire" class="insert_box_mobile" required></textarea><br />
                 <input type="submit" value="Envoyer" class="submit_button">
             </p>
         </form>
