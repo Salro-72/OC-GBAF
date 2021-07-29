@@ -90,7 +90,7 @@ if (!$_SESSION['id_user'])
                                         if ($number && $like == 1)
                                             echo 'style="color:green;"';
                                     ?>>
-                                    <input type="submit" name="vote" value="J'aime" class="submit_button">
+                                    <input type="submit" value="J'aime" class="submit_button">
                                 </i>
                                 <span class="countlike"><?=$likes?></span>
                             </div>
@@ -100,7 +100,7 @@ if (!$_SESSION['id_user'])
                                         if ($number && $like == 0)
                                             echo 'style="color:red;"';
                                     ?>>
-                                    <input type="submit" name="vote" value="Je n'aime pas" class="submit_button">
+                                    <input type="submit" value="Je n'aime pas" class="submit_button">
                                 </i>                            
                                 <span class="countdislike"><?=$dislikes?></span>
                             </div>
