@@ -33,51 +33,46 @@ CREATE TABLE `users` (
   `firstname` text COLLATE utf8_unicode_ci NOT NULL,
   `lastname` text COLLATE utf8_unicode_ci NOT NULL,
   `question` text COLLATE utf8_unicode_ci NOT NULL,
-  `reponse` text COLLATE utf8_unicode_ci NOT NULL
+  `answer` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `billets`
+-- Table structure for table `acteurs`
 --
 
-CREATE TABLE `billets` (
-  `id` int(11) NOT NULL,
-  `titre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+CREATE TABLE `acteurs` (
+  `id_acteur` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `contenu` text COLLATE utf8_unicode_ci NOT NULL,
   `logo_acteur` blob NOT NULL,
   `firstline` text COLLATE utf8_unicode_ci NOT NULL,
-  `like_count` int(11) NOT NULL DEFAULT '0',
-  `dislike_count` int(11) NOT NULL DEFAULT '0'
+  `likes` int(11) NOT NULL,
+  `dislikes` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `commentaires`
---
-
-CREATE TABLE `commentaires` (
+CREATE TABLE `comments` (
   `id` int(11) NOT NULL,
-  `id_billet` int(11) NOT NULL,
+  `id_acteur` int(11) NOT NULL,
   `id_user` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `commentaire` text COLLATE utf8_unicode_ci NOT NULL,
-  `date_commentaire` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `comment` text COLLATE utf8_unicode_ci NOT NULL,
+  `date_comment` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vote`
+-- Table structure for table `votes`
 --
 
-CREATE TABLE `vote` (
-  `id_vote` int(11) NOT NULL,
+CREATE TABLE `votes` (
   `id_acteur` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `vote` enum('like','dislike') COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `vote` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
