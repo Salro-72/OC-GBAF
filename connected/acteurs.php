@@ -103,34 +103,36 @@ if (!$_SESSION['id_user'])
                                     <input type="submit" name="dislikes" value="Je n'aime pas" class="submit_button">
                                 </i>                            
                                 <span class="countdislike"><?=$dislikes?></span>
-                                <?php
-                                    if (isset($_POST['vote'])){
-                                        $vote = $_POST['vote'];
-                    
-                                    if ($number == 0) {
-                                    // Insertion du vote à l'aide d'une requête préparée
-                                    $req = $pdo->prepare('INSERT INTO votes (vote) VALUES(0)');
-                                    $req->execute(array($_GET['billet'], $_SESSION['id_user'], $_POST['vote']));
-                    
-                                    echo 'Votre vote (j\'aime) a été validé.';
-                                    }
-                                    
-                                    elseif ($number == 1) {
-                                    // Insertion du vote à l'aide d'une requête préparée
-                                    $req = $pdo->prepare('UPDATE votes SET vote = :vote WHERE id_user = ?');
-                                    $req->execute(array($_GET['billet'], $_SESSION['id_user'], $_POST['vote']));
-                                                    
-                                    echo 'Votre vote (je n\'aime pas) a été validé.';
-                                        }
-                                }
-                                ?>
                             </div>
-       
+                            <?php
+                                if (isset($_POST['vote'])){
+                                    $vote = $_POST['vote'];
+                                
+                                if ($number == 1) {
+                                // Insertion du vote à l'aide d'une requête préparée
+                                $req = $pdo->prepare('INSERT INTO votes (id_acteur, id_user, vote) VALUES(?, ?, 1)');
+                                $req->execute(array($_GET['billet'], $_SESSION['id_user'], $_POST['vote']));
+                                
+                                echo "Votre vote a été validé.";
+                                }
+                                
+                                elseif ($number == 0) {
+                                // Insertion du vote à l'aide d'une requête préparée
+                                $req = $pdo->prepare('UPDATE votes SET vote = :vote WHERE id_acteur = ? AND id_user = ? AND vote = 0');
+                                $req->execute(array($_GET['billet'], $_SESSION['id_user'], $_POST['vote']));
+                                $dislikes = $req->fetch(PDO::FETCH_ASSOC)['dislikes'];
+                                                
+                                echo "Votre vote a été validé.";
+                                }
+                                }
+                            ?>
                     </div>
                 </div>
             </form>
                 <br>
-<!-- section ecrire commentaire -->    
+<!-- section ecrire commentaire --> 
+
+<!-- MIS À JOUR -->
         <form method="POST" action="commentaires_post.php?billet=<?php echo $_GET['billet'];?>" class="comment_box">
                 <input for="id_user" type="text" name="id_user" id="id_user" value="<?php echo $_SESSION['pseudo'];?>" class="name_mobile" />
                 <br><br>
