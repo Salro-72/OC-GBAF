@@ -2,7 +2,7 @@
 session_start();
 require '../configs/db.php';
 
-if (!$_SESSION['pseudo'])  
+if (!$_SESSION['id_user'])  
 {  
     header('location: ../login.php');  
     exit;  
@@ -102,52 +102,23 @@ if (!$_SESSION['pseudo'])
                             <input type="text" id="identifiant" name="pseudo" value="<?php echo isset($_POST['pseudo'])? $_POST['pseudo'] : $_SESSION['pseudo'];?>"
                             class="insert_box_mobile" required>
                         </div>
-                        <br>
-                        <div class="pass">
-                            <label for="pass" class="names"><strong>Mot de passe ACTUEL : </strong></label>
-                            <br>
-                            <input type="password" id="actualpass" name="actualpass" class="insert_box_mobile" required>
-                        </div>
-                        <br>
-                        <div class="pass">
-                            <label for="pass" class="names"><strong>NOUVEAU mot de passe :</strong></label>
-                            <br>
-                            <input type="password" id="pass" name="password" class="insert_box_mobile" required>
-                        </div>
-                        <br>
-                        <div class="repass">
-                            <label for="repass" class="names"><strong>Retapez votre NOUVEAU mot de passe :  </strong></label>
-                            <br>
-                            <input type="password" id="repass" name="repassword" class="insert_box_mobile" required>
-                        </div>
-                        <br>
                         <input type="submit" value="Modifier" class="submit_button">
-                            <?php 
-                            if (isset ($_POST['pseudo']) && ($_POST['actualpass']) && ($_POST['password']) && ($_POST['repassword']))
-                            {
-                                if ($_POST['password'] === $_POST['repassword'])
-                                // vérifie si les mots de passe entrés dans les deux champs sont identiques.
-                                {
-                                    $password = $_POST['password']; 
-                                    
-                                    $reponse = $pdo->prepare('SELECT pseudo, password FROM users WHERE pseudo = :pseudo');
+<!-- MIS À JOUR = on verifie bien que le pseudo n'est pas déjà pris, si jamais c'est le cas, un message erreur s'affiche --> 
+                        <?php 
+                            if (isset ($_POST['pseudo']))
+                            {       
+                                    $reponse = $pdo->prepare('SELECT pseudo FROM users WHERE pseudo = :pseudo');
                                     $reponse->execute(array('pseudo' => $_POST['pseudo']));
                                     $donnees = $reponse->fetch();
-                                        
-                                    $passcheck = password_verify($_POST['actualpass'], $donnees['password']);
-                                    // compare le mot de passe actuel avec celui en base
 
-                                    if ($passcheck) // si la comparaison est ok
-                                    {
                                         if (($donnees == false) || ($donnees['pseudo'] === $_SESSION['pseudo']))
+                                        // si le pseudo n'a pas été trouvé, il est donc libre || ou si le pseudo entré et le même que celui en session
                                         {
                                             $reponse->closeCursor(); // libère la connexion au serveur, permettant ainsi à d'autres requêtes SQL d'être exécutées 
-                                            
-                                            $pass_hache = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                                            $reponse = $pdo->prepare('UPDATE users SET pseudo = :pseudo, password = :password WHERE id_user = :id_user');
+
+                                            $reponse = $pdo->prepare('UPDATE users SET pseudo = :pseudo WHERE id_user = :id_user');
                                             $reponse->execute(array(
                                                 'pseudo' => $_POST['pseudo'],
-                                                'password' => $pass_hache,
                                                 'id_user' => $_SESSION['id_user']));
                                             $reponse->closeCursor(); // libère la connexion au serveur, permettant ainsi à d'autres requêtes SQL d'être exécutées 
                                                 
@@ -177,6 +148,66 @@ if (!$_SESSION['pseudo'])
                                         </div>
                                         <?php    
                                     }   
+                                ?>
+                        <br>
+                        <div class="pass">
+                            <label for="pass" class="names"><strong>Mot de passe ACTUEL : </strong></label>
+                            <br>
+                            <input type="password" id="actualpass" name="actualpass" class="insert_box_mobile" required>
+                        </div>
+                        <br>
+                        <div class="pass">
+                            <label for="pass" class="names"><strong>NOUVEAU mot de passe :</strong></label>
+                            <br>
+                            <input type="password" id="pass" name="password" class="insert_box_mobile" required>
+                        </div>
+                        <br>
+                        <div class="repass">
+                            <label for="repass" class="names"><strong>Retapez votre NOUVEAU mot de passe :  </strong></label>
+                            <br>
+                            <input type="password" id="repass" name="repassword" class="insert_box_mobile" required>
+                        </div>
+                        <br>
+                        <input type="submit" value="Modifier" class="submit_button">
+                            <?php 
+                            if (isset ($_POST['actualpass']) && ($_POST['password']) && ($_POST['repassword']))
+                            {
+                                if ($_POST['password'] === $_POST['repassword'])
+                                // vérifie si les mots de passe entrés dans les deux champs sont identiques.
+                                {
+                                    $password = $_POST['password']; 
+                                    
+                                    $reponse = $pdo->prepare('SELECT password FROM users WHERE id_user = :id_user');
+                                    $reponse->execute(array('id_user' => $_SESSION['id_user']));
+                                    $donnees = $reponse->fetch();
+                                        
+                                    $passcheck = password_verify($_POST['actualpass'], $donnees['password']);
+                                    // compare le mot de passe actuel avec celui en base
+
+                                    if ($passcheck) // si la comparaison est ok
+                                    {
+                                        $reponse->closeCursor(); // libère la connexion au serveur, permettant ainsi à d'autres requêtes SQL d'être exécutées 
+                                        
+                                        $pass_hache = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                                        $reponse = $pdo->prepare('UPDATE users SET password = :password WHERE id_user = :id_user');
+                                        $reponse->execute(array(
+                                            'password' => $pass_hache,
+                                            'id_user' => $_SESSION['id_user']));
+                                        $reponse->closeCursor(); // libère la connexion au serveur, permettant ainsi à d'autres requêtes SQL d'être exécutées 
+                                                
+                                        $reponse = $pdo->prepare('SELECT * FROM users WHERE id_user = :id_user');
+                                        $reponse->execute(array('id_user' => $_SESSION['id_user']));
+                                        $donnees = $reponse->fetch();
+                                        // met à jour la session avec les nouvelles variables (si l'utilisateur à fait des modifications dans ses infos de connexion)
+                                            
+                                        ?> 
+                                        <br>
+                                        <br>
+                                        <div class="msg_success">
+                                            <p style="color:green;">Les modifications ont été apportées avec succès!</p>
+                                        </div>
+                                        <?php
+                                    }  
                                 }
                                 else
                                 {
