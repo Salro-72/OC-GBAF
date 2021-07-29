@@ -22,7 +22,7 @@ session_destroy();
             <div class="option_box">
                 <div>
                     <p>Connectez-vous à nouveau</p>
-                    <p><a href="../login.php" class="connexion_button">Connexion</a></p><br>
+                    <p><a href="../login.php" class="submit_button">Connexion</a></p><br>
                 </div>
             </div>
 

@@ -16,6 +16,7 @@ if (!$_SESSION['id_user'])
         <meta charset="UTF-8" />
         <link rel="stylesheet" type="text/css" href="../style_GBAF.css"/>
         <title>Extranet GBAF</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
     </head>
         <body>
             <header>
@@ -56,46 +57,84 @@ if (!$_SESSION['id_user'])
             </div>
             <hr>
 <!-- section likes/dislikes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
-    <script src="votes.js"></script>
-  </head>
-  <body>
-  <?php
-  
-  $req = $pdo->prepare('SELECT vote FROM votes WHERE id_acteur = ? AND id_user = ?');
-  $req->execute(array($_GET['billet'], $_POST['id_user']));
-  $number = $req->rowCount();
 
-  $fecth = $req->fetch();
+<!-- MIS À JOUR -->
+            <form method="POST">
+                <?php
+                    $req = $pdo->prepare('SELECT COUNT(*) as dislikes FROM votes WHERE id_acteur = ? AND vote = 0');
+                    $req->execute(array($_GET['billet']));
+                    $dislikes = $req->fetch(PDO::FETCH_ASSOC)['dislikes'];
+                    $req->closeCursor();
 
-  if ($number) {
-      $like = $fetch['vote'];
-     
-      if ($like) {
-          
-      }
-  }
-  ?>
-    <div id="demo">
-        <div class="prow" data-react="<?=$reuser?>" id="prow<?=$_GET['billet']?>">
-            <div class="ptxt">Donnez votre avis:</div>
-                <div class="plike" onclick="react(<?=$_GET['billet']?>, 1)">
-                <i class="fa fa-thumbs-up"></i>
-                <span class="countlike"><?=$likes?></span>
+                    $req = $pdo->prepare('SELECT COUNT(*) as likes FROM votes WHERE id_acteur = ? AND vote = 1');
+                    $req->execute(array($_GET['billet']));
+                    $likes = $req->fetch(PDO::FETCH_ASSOC)['likes'];
+                    $req->closeCursor();
+
+                    // Ici on vérifie si l'utilisateur a voté
+                    $req = $pdo->prepare('SELECT vote FROM votes WHERE id_acteur = ? AND id_user = ?');
+                    $req->execute(array($_GET['billet'], $_SESSION['id_user']));
+                    $number = $req->rowCount();
+                    //si $number = 0, çela veux dire qu'il n'a pas voté, sinon il a voté
+                    if($number) {
+                        $fetch = $req->fetch(PDO::FETCH_ASSOC);
+                        $like = $fetch['vote'];
+                    }
+                ?>
+                <div id="demo">
+                    <div class="prow">
+                        <div class="ptxt">Donnez votre avis:</div>
+                            <div class="plike">
+                                <i class="fa fa-thumbs-up" 
+                                    <?php 
+                                        if ($number && $like == 1)
+                                            echo 'style="color:green;"';
+                                    ?>>
+                                    <input type="submit" name="likes" value="J'aime" class="submit_button">
+                                </i>
+                                <span class="countlike"><?=$likes?></span>
+                            </div>
+                            <div class="pdislike">
+                                <i class="fa fa-thumbs-down"                             
+                                    <?php 
+                                        if ($number && $like == 0)
+                                            echo 'style="color:red;"';
+                                    ?>>
+                                    <input type="submit" name="dislikes" value="Je n'aime pas" class="submit_button">
+                                </i>                            
+                                <span class="countdislike"><?=$dislikes?></span>
+                                <?php
+                                    if (isset($_POST['vote'])){
+                                        $vote = $_POST['vote'];
+                    
+                                    if ($number == 0) {
+                                    // Insertion du vote à l'aide d'une requête préparée
+                                    $req = $pdo->prepare('INSERT INTO votes (vote) VALUES(0)');
+                                    $req->execute(array($_GET['billet'], $_SESSION['id_user'], $_POST['vote']));
+                    
+                                    echo 'Votre vote (j\'aime) a été validé.';
+                                    }
+                                    
+                                    elseif ($number == 1) {
+                                    // Insertion du vote à l'aide d'une requête préparée
+                                    $req = $pdo->prepare('UPDATE votes SET vote = :vote WHERE id_user = ?');
+                                    $req->execute(array($_GET['billet'], $_SESSION['id_user'], $_POST['vote']));
+                                                    
+                                    echo 'Votre vote (je n\'aime pas) a été validé.';
+                                        }
+                                }
+                                ?>
+                            </div>
+       
+                    </div>
                 </div>
-        
-                <div class="pdislike" onclick="react(<?=$_GET['billet']?>, 0)">
-                <i class="fa fa-thumbs-down"></i>
-                <span class="countdislike"><?=$dislikes?></span>
-                </div>
-        </div>
-    </div>
+            </form>
+                <br>
 <!-- section ecrire commentaire -->    
         <form method="POST" action="commentaires_post.php?billet=<?php echo $_GET['billet'];?>" class="comment_box">
-            <p>
-                <label for="id_user" class="name_mobile">Veuillez verifier votre identifiant:</label><br>
-                <input type="text" name="id_user" id="id_user" value="<?php echo $_SESSION['pseudo'];?>" class="insert_box_mobile" required/>
-                <br>
+                <input for="id_user" type="text" name="id_user" id="id_user" value="<?php echo $_SESSION['pseudo'];?>" class="name_mobile" />
+                <br><br>
+                <label for="id_user" class="name_mobile">Veuillez laisser votre commentaire :</label>
                 <label for="commentaire"></label><br />
                 <textarea name="comment" id="comment" cols="50" rows="5" placeholder="Votre commentaire" class="insert_box_mobile" required></textarea><br />
                 <input type="submit" value="Envoyer" class="submit_button">
@@ -104,6 +143,7 @@ if (!$_SESSION['id_user'])
 <!-- commentaires -->
         <div class="nb_comment">
             <?php $req->closeCursor(); // Important : on libère le curseur pour la prochaine requête
+                
                 // Récupération nombre des commentaires
                 $req = $pdo->prepare('SELECT id_acteur, COUNT(*) AS nb_messages FROM comments WHERE id_acteur = ?');
                 $req->execute(array($_GET['billet']));
@@ -118,6 +158,7 @@ if (!$_SESSION['id_user'])
         </div>
             <p class="comment_everyone">
                 <?php $req->closeCursor(); // Important : on libère le curseur pour la prochaine requête
+                
                 // Récupération des commentaires
                 $req = $pdo->prepare('SELECT id_user, comment, DATE_FORMAT(date_comment, \'%d/%m/%Y à %Hh%imin%ss\') AS date_comment_fr
                 FROM comments WHERE id_acteur = ? ORDER BY date_comment');

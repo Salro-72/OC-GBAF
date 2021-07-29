@@ -2,7 +2,7 @@
 session_start();
 require '../configs/db.php';
 
-if (!$_SESSION['pseudo'])  
+if (!$_SESSION['id_user'])  
 {  
     header('location: ../login.php');  
     exit;  
@@ -18,16 +18,19 @@ if (!$_SESSION['pseudo'])
     </head>
         <body>
             <header>
-                <?php include("../php/logo.php"); ?>
+                <div class="profil_connected">
+                    <?php include("../php/logo.php"); ?>
+                <div>
                 <div class="title">
                     <h1>Bienvenue chez extranet GBAF</h1>
                 </div>
                 <div>
                     <?php include("../php/profile.php"); ?>
                 </div>
+                <br>
                 <div class="topnav">
                     <a class="active" href="homepage.php">Acceuil</a>
-                    <a href="modifyprofile_copy.php">TEST Modifier votre profile</a>
+                    <a href="modifyprofile.php">Modifier votre profile</a>
                     <a href="logout.php">Déconnexion</a>
                 </div>
             </header>
@@ -35,7 +38,7 @@ if (!$_SESSION['pseudo'])
                 <div class="sectionpresentations">
                     <h1 class="presentation_title_h1">GBAF</h1>
                     <p class="presentation_text">Le Groupement Banque Assurance Français (GBAF) est une fédération
-                    représentant les 6 grands groupes français :
+                                                représentant les 6 grands groupes français :
                         <ul class="groupes_list">
                             <li>BNP Paribas ;</li>
                             <li>BPCE ;</li>
@@ -78,35 +81,33 @@ if (!$_SESSION['pseudo'])
                     </div>
                     <hr>
 <!-- section acteurs et partenaires textes: -->
-        <?php
-            // On récupère les 5 derniers billets
-            $req = $pdo->query('SELECT id, titre, firstline, logo_acteur
-            FROM billets');
+                    <?php
+                        $req = $pdo->query('SELECT id_acteur, title, firstline, logo_acteur
+                        FROM acteurs');
 
-            while ($donnees = $req->fetch())
-            {
-            ?>
-
-        <div class="row">
-        <img class="logo_partenaire">
-                <?php echo '<img src="data:image/jpeg;base64,'.base64_encode( $donnees['logo_acteur'] ).'"/>'?>
-            </img> 
-           <br>
-            <h3 class="presentation_title_h3">
-                <?php echo htmlspecialchars($donnees['titre']); ?>
-            </h3>
-            <br>
-            <p class="sneakpeak_text"><?php echo nl2br(htmlspecialchars($donnees['firstline']));?>
-                <br />
-                <em><a href="acteurs.php?billet=<?php echo $donnees['id']; ?>" class="read_more">Lisez la suite...</a></em>
-            </p>
-            <br>
-        </div>
-        <hr>
-            <?php
-            } // Fin de la boucle des billets
-            $req->closeCursor();
-            ?>
-        <?php include("../php/footer.php"); ?>
-    </body>
+                        while ($donnees = $req->fetch())
+                        {
+                    ?>
+                    <div class="row">
+                        <img class="logo_partenaire">
+                            <?php echo '<img src="data:image/jpeg;base64,'.base64_encode( $donnees['logo_acteur'] ).'"/>'?>
+                        </img> 
+                        <br>
+                        <h3 class="presentation_title_h3">
+                            <?php echo htmlspecialchars($donnees['title']); ?>
+                        </h3>
+                        <br>
+                        <p class="sneakpeak_text"><?php echo nl2br(htmlspecialchars($donnees['firstline']));?>
+                            <br>
+                            <em><a href="acteurs.php?billet=<?php echo $donnees['id_acteur']; ?>" class="read_more">Lisez la suite...</a></em>
+                        </p>
+                        <br>
+                    </div>
+                    <hr>
+                        <?php
+                        } // Fin de la boucle des acteurs
+                        $req->closeCursor();
+                        ?>
+                <?php include("../php/footer.php"); ?>
+        </body>
 </html>

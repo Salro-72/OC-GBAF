@@ -18,5 +18,5 @@ if (!$number) {
 }
 
 else {
-   echo "Vous avez déjà commenté! <br> <a href='acteurs.php?billet=". $_GET['billet'] ."'> Retour arriere</a>";
+   echo "Vous avez déjà commenté! <br> <a href='acteurs.php?billet=". $_GET['billet'] ."'> Retour à l'arriere</a>";
 }
