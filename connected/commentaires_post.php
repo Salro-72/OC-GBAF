@@ -2,6 +2,7 @@
 session_start();
 require '../configs/db.php';
 
+// MIS À JOUR = limiter le nombre des commentaires (un commentaire par utilisateur / par article)
 
 $req = $pdo->prepare('SELECT * FROM comments WHERE id_acteur = ? AND id_user = ?');
 $req->execute(array($_GET['billet'], $_POST['id_user']));
