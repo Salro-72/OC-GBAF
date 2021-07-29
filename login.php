@@ -16,28 +16,29 @@ if(isset($_POST['login'])){
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //  Récupération de l'utilisateur et de son mot de passe hashé
     $req = $pdo->prepare('SELECT id_user, password FROM users WHERE pseudo = :pseudo');
     $req->execute(array(
         'pseudo' => $pseudo));
     $resultat = $req->fetch();
     
-    // Comparaison du pass envoyé via le formulaire avec la base
     $isPasswordCorrect = password_verify($_POST['password'], $resultat['password']);
     
-    if (!$resultat)
+    if ($resultat)
     {
-        echo 'Mauvais identifiant ou mot de passe !';
-    }
+        if ($isPasswordCorrect) {
+            $_SESSION['id_user'] = $resultat['id_user'];
+            $_SESSION['pseudo'] = $pseudo;
+            $_SESSION['firstname'] = $firstname;
+            $_SESSION['lastname'] = $lastname;
+            header('Location: connected/homepage.php');
+        }
         else
         {
-            if ($isPasswordCorrect) {
-                $_SESSION['id_user'] = $resultat['id_user'];
-                $_SESSION['pseudo'] = $pseudo;
-                $_SESSION['firstname'] = $firstname;
-                $_SESSION['lastname'] = $lastname;
-                header('Location: connected/homepage.php');
-                exit;
+            ?>
+            <div class="msg_error">
+                <p style="color:red; text-align:center;">Mauvais identifiant ou mot de passe !</p>
+            </div>
+            <?php
         }
     }
 }
@@ -52,26 +53,26 @@ if(isset($_POST['login'])){
     </head>    
         <body>
             <header>
-            <img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"/>
-            <div class="title">
-                <h1>Connectez-vous à votre espace membre:</h1>
-            </div>    
+                <a href="index.php"><img src="GBAF_img/GBAF_logo.png" alt="Logo de GBAF" class="center"></a>
+                <div class="title">
+                    <h1>Connectez-vous à votre espace membre:</h1>
+                </div>    
             </header>
+            
             <form action="login.php" method="post" class="option_box">
-
                 <label for="pseudo" class="names">Identifiant</label>
-                <input type="text" id="pseudo" name="pseudo" required><br>
+                    <input type="text" id="pseudo" name="pseudo" class="insert_box" required><br>
                 <br>
                 <label for="password" class="names">Mot de passe</label>
-                <input type="password" id="password" name="password" required><br>
+                    <input type="password" id="password" name="password" class="insert_box" required><br>
                 <br>
-                <input type="submit" name="login" value="Connexion" class="connexion_button">
+                <input type="submit" name="login" value="Connexion" class="submit_button">
 
-                <div class="new_password">
+                <div class="box_link">
                     <p><a href="forgotpassword.php">Mot de passe oublié?</a></p>
                 </div>  
                               
-                <div class="new_inscription">
+                <div class="box_link">
                     <p><a href="signup.php">Première visite?</a></p>
                 </div> 
             </form>
